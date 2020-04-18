@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gx.dao.ZfRefundsMapper" >
+  <resultMap id="BaseResultMap" type="com.gx.po.ZfRefunds" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="bank" property="bank" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="payee" property="payee" jdbcType="VARCHAR" />
+    <result column="payment_method" property="paymentMethod" jdbcType="VARCHAR" />
+    <result column="orders" property="orders" jdbcType="BIGINT" />
+  </resultMap>
+     <select id="getTotalSize" parameterType="java.util.Map" resultType="java.lang.Integer" >
+    select count(*) from zf_refunds
+		<where>
+		1=1
+             <if test="account!=null">
+				and account=#{account}
+			</if>
+		</where>	
+			
+       
+  </select>
+  <select id="query" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select  *
+		from zf_refunds
+	<where>
+	1=1
+             <if test="account!=null">
+				and account=#{account}
+			</if>	
+			   LIMIT #{start},#{size}
+   </where>		
+         
+       
+	</select>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, create_date, modify_date, account, amount, bank, memo, payee, payment_method, 
+    orders
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gx.po.ZfRefundsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zf_refunds
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zf_refunds
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zf_refunds
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gx.po.ZfRefundsExample" >
+    delete from zf_refunds
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gx.po.ZfRefunds" >
+    insert into zf_refunds (id, create_date, modify_date, 
+      account, amount, bank, 
+      memo, payee, payment_method, 
+      orders)
+    values (#{id,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{modifyDate,jdbcType=TIMESTAMP}, 
+      #{account,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{bank,jdbcType=VARCHAR}, 
+      #{memo,jdbcType=VARCHAR}, #{payee,jdbcType=VARCHAR}, #{paymentMethod,jdbcType=VARCHAR}, 
+      #{orders,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gx.po.ZfRefunds" >
+    insert into zf_refunds
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="modifyDate != null" >
+        modify_date,
+      </if>
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="bank != null" >
+        bank,
+      </if>
+      <if test="memo != null" >
+        memo,
+      </if>
+      <if test="payee != null" >
+        payee,
+      </if>
+      <if test="paymentMethod != null" >
+        payment_method,
+      </if>
+      <if test="orders != null" >
+        orders,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="bank != null" >
+        #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null" >
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="payee != null" >
+        #{payee,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentMethod != null" >
+        #{paymentMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="orders != null" >
+        #{orders,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gx.po.ZfRefundsExample" resultType="java.lang.Integer" >
+    select count(*) from zf_refunds
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update zf_refunds
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.createDate != null" >
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.modifyDate != null" >
+        modify_date = #{record.modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.account != null" >
+        account = #{record.account,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount != null" >
+        amount = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bank != null" >
+        bank = #{record.bank,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null" >
+        memo = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payee != null" >
+        payee = #{record.payee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paymentMethod != null" >
+        payment_method = #{record.paymentMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orders != null" >
+        orders = #{record.orders,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update zf_refunds
+    set id = #{record.id,jdbcType=BIGINT},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      modify_date = #{record.modifyDate,jdbcType=TIMESTAMP},
+      account = #{record.account,jdbcType=VARCHAR},
+      amount = #{record.amount,jdbcType=DECIMAL},
+      bank = #{record.bank,jdbcType=VARCHAR},
+      memo = #{record.memo,jdbcType=VARCHAR},
+      payee = #{record.payee,jdbcType=VARCHAR},
+      payment_method = #{record.paymentMethod,jdbcType=VARCHAR},
+      orders = #{record.orders,jdbcType=BIGINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gx.po.ZfRefunds" >
+    update zf_refunds
+    <set >
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="bank != null" >
+        bank = #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null" >
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="payee != null" >
+        payee = #{payee,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentMethod != null" >
+        payment_method = #{paymentMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="orders != null" >
+        orders = #{orders,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gx.po.ZfRefunds" >
+    update zf_refunds
+    set create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      account = #{account,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      bank = #{bank,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR},
+      payee = #{payee,jdbcType=VARCHAR},
+      payment_method = #{paymentMethod,jdbcType=VARCHAR},
+      orders = #{orders,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

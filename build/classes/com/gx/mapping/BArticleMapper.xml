@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gx.dao.BArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.gx.po.BArticle" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="img" property="img" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="sendtime" property="sendtime" jdbcType="TIMESTAMP" />
+    <result column="fmimg" property="fmimg" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.gx.po.BArticle" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+  <select id="getTrainTypeNuminfo" resultType="map" >
+  Select s.state AS state, count(s.state) AS img
+  from b_article a left join b_state s on a.state=s.id where isdel=1 
+  Group By s.state   
+  </select>
+  
+  <!--  <select id="getEncryptDeviceForExcel" resultMap="BaseResultMap" >
+    select *
+   
+   from b_article
+    where isdel=1  order by orders  desc
+  </select> -->
+   <select id="getTotalSize" parameterType="java.util.Map" resultType="java.lang.Integer" >
+    select count(*) from b_article 
+    <where>
+		 isdel=1 
+             <if test="state!=null">
+				and state=#{state}
+			</if>
+			<if test="title!=null">
+				and title like '%${title}%'
+			</if>
+			<if test="cid != null" >
+               and cid=#{cid}
+            </if>
+        </where>
+  </select>
+  <select id="query" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select  *
+		from b_article
+		<where>
+		 isdel=1 
+             <if test="state!=null">
+				and state=#{state}
+			</if>
+			<if test="title!=null">
+				and title like '%${title}%'
+			</if>
+			 <if test="cid != null" >
+               and cid=#{cid}
+            </if>
+			order by orders  desc
+            LIMIT #{start},#{size}
+        </where>
+	</select>
+  
+   <select id="selectMaxSort" resultType="java.lang.Integer">
+    select IFNULL(max(orders),0)  from b_article
+  </select>
+
+  <select id="moveUp" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from b_article f
+        WHERE f.orders &gt; #{sort} order by f.orders asc limit 0,1
+  </select>
+  <select id="moveDown" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from b_article f
+        WHERE f.orders &lt; #{sort} order by f.orders desc limit 0,1
+  </select>
+  <select id="next" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from b_article f
+         WHERE f.orders &lt; #{sort} order by f.orders desc limit 0,1
+  </select>
+    <select id="pre" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from b_article f
+       WHERE f.orders &gt; #{sort} order by f.orders asc limit 0,1
+  </select>
+ <select id="selectAllInfo" resultMap="BaseResultMap" parameterType="com.gx.po.BArticle" >
+    select *
+   
+   from b_article
+    where isdel=1  order by orders  desc
+  </select>
+  <select id="selectAllDel" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select  *
+		from b_article
+		<where>
+		 isdel=0
+             <if test="state!=null">
+				and state=#{state}
+			</if>
+			<if test="title!=null">
+				and title like '%${title}%'
+			</if>
+		
+            LIMIT #{start},#{size}
+        </where>
+	</select>
+	<select id="getTotalDelSize" parameterType="java.util.Map" resultType="java.lang.Integer" >
+    select count(*) from b_article 
+    <where>
+		 isdel=0
+             <if test="state!=null">
+				and state=#{state}
+			</if>
+			<if test="title!=null">
+				and title like '%${title}%'
+			</if>
+			
+        </where>
+  </select>
+     <select id="findbycategoryid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select * from b_article a left join b_article_category  ca on cid=ca.id where ca.id=#{id} and a.isdel=1
+  </select>
+   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+     
+   from b_article
+    where isdel=1 and id=#{id}
+  </select>
+      <update id="deleteById" parameterType="com.gx.po.BArticle" >
+    update b_article
+    set 
+     isdel=0
+     WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="deleteByIds" parameterType="java.lang.Integer" >
+    update b_article
+    set 
+     isdel=0
+     WHERE id in
+     <foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+	</foreach>
+  </update>
+   <delete id="deleteAllByIds" parameterType="java.lang.Integer" >
+    delete  from b_article  
+     WHERE isdel=0 and id in
+     <foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+	</foreach>
+  </delete>
+   <update id="updateById" parameterType="com.gx.po.BArticle" >
+    update b_article
+    set 
+      cid = #{cid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR},
+       state = #{state,jdbcType=INTEGER},
+        <if test="fmimg != null" >
+        fmimg = #{fmimg,jdbcType=VARCHAR},
+        </if>
+       sendtime = #{sendtime,jdbcType=TIMESTAMP}
+     WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByDingshiId" parameterType="java.lang.Integer" >
+    update b_article
+    set    
+       state = 2      
+     WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByXiaxianDingshiId" parameterType="java.lang.Integer" >
+    update b_article
+    set    
+       state = 3     
+     WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 修改状态 -->
+	<update id="updateState" parameterType="map">
+		update b_article
+		set state=#{state}
+		where id in
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	<!-- 修改定时状态 -->
+	<update id="updateDingshiState" parameterType="map">
+		update b_article
+		set state=#{state}
+		where id = #{id,jdbcType=INTEGER}
+		
+	</update>
+	 <!-- 修改删除状态 -->
+	<update id="updateDelState" parameterType="map">
+		update b_article
+		set isdel=#{state}
+		where id in
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, cid, title, creattime, isdel, orders, img, state, sendtime, fmimg
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.gx.po.BArticleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from b_article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gx.po.BArticleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from b_article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from b_article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from b_article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gx.po.BArticleExample" >
+    delete from b_article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gx.po.BArticle" >
+    insert into b_article (id, cid, title, 
+      creattime, isdel, orders, 
+      img, state, sendtime, 
+      fmimg, content)
+    values (#{id,jdbcType=INTEGER}, #{cid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{creattime,jdbcType=TIMESTAMP}, #{isdel,jdbcType=INTEGER}, #{orders,jdbcType=INTEGER}, 
+      #{img,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{sendtime,jdbcType=TIMESTAMP}, 
+      #{fmimg,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gx.po.BArticle" >
+    insert into b_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cid != null" >
+        cid,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="creattime != null" >
+        creattime,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="orders != null" >
+        orders,
+      </if>
+      <if test="img != null" >
+        img,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="sendtime != null" >
+        sendtime,
+      </if>
+      <if test="fmimg != null" >
+        fmimg,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cid != null" >
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="orders != null" >
+        #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="img != null" >
+        #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="sendtime != null" >
+        #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fmimg != null" >
+        #{fmimg,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gx.po.BArticleExample" resultType="java.lang.Integer" >
+    select count(*) from b_article 
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update b_article
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.cid != null" >
+        cid = #{record.cid,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creattime != null" >
+        creattime = #{record.creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isdel != null" >
+        isdel = #{record.isdel,jdbcType=INTEGER},
+      </if>
+      <if test="record.orders != null" >
+        orders = #{record.orders,jdbcType=INTEGER},
+      </if>
+      <if test="record.img != null" >
+        img = #{record.img,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendtime != null" >
+        sendtime = #{record.sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.fmimg != null" >
+        fmimg = #{record.fmimg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update b_article
+    set id = #{record.id,jdbcType=INTEGER},
+      cid = #{record.cid,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      creattime = #{record.creattime,jdbcType=TIMESTAMP},
+      isdel = #{record.isdel,jdbcType=INTEGER},
+      orders = #{record.orders,jdbcType=INTEGER},
+      img = #{record.img,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=INTEGER},
+      sendtime = #{record.sendtime,jdbcType=TIMESTAMP},
+      fmimg = #{record.fmimg,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update b_article
+    set id = #{record.id,jdbcType=INTEGER},
+      cid = #{record.cid,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      creattime = #{record.creattime,jdbcType=TIMESTAMP},
+      isdel = #{record.isdel,jdbcType=INTEGER},
+      orders = #{record.orders,jdbcType=INTEGER},
+      img = #{record.img,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=INTEGER},
+      sendtime = #{record.sendtime,jdbcType=TIMESTAMP},
+      fmimg = #{record.fmimg,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gx.po.BArticle" >
+    update b_article
+    <set >
+      <if test="cid != null" >
+        cid = #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        creattime = #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="orders != null" >
+        orders = #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="img != null" >
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="sendtime != null" >
+        sendtime = #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fmimg != null" >
+        fmimg = #{fmimg,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.gx.po.BArticle" >
+    update b_article
+    set cid = #{cid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      isdel = #{isdel,jdbcType=INTEGER},
+      orders = #{orders,jdbcType=INTEGER},
+      img = #{img,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      sendtime = #{sendtime,jdbcType=TIMESTAMP},
+      fmimg = #{fmimg,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gx.po.BArticle" >
+    update b_article
+    set cid = #{cid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      isdel = #{isdel,jdbcType=INTEGER},
+      orders = #{orders,jdbcType=INTEGER},
+      img = #{img,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      sendtime = #{sendtime,jdbcType=TIMESTAMP},
+      fmimg = #{fmimg,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

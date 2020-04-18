@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gx.dao.XxFactoryMapper" >
+  <resultMap id="BaseResultMap" type="com.gx.po.XxFactory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="FULL_NAME" property="fullName" jdbcType="VARCHAR" />
+    <result column="FACTORY_NAME" property="factoryName" jdbcType="VARCHAR" />
+    <result column="CONTACTS" property="contacts" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="INSPECTOR" property="inspector" jdbcType="VARCHAR" />
+    <result column="CNOTE" property="cnote" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="INTEGER" />
+    <result column="STATE" property="state" jdbcType="INTEGER" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_DEPT" property="createDept" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, FULL_NAME, FACTORY_NAME, CONTACTS, PHONE, MOBILE, FAX, INSPECTOR, CNOTE, ORDER_NO, 
+    STATE, CREATE_BY, CREATE_DEPT, CREATE_TIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gx.po.XxFactoryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from xx_factory
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from xx_factory
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from xx_factory
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gx.po.XxFactoryExample" >
+    delete from xx_factory
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gx.po.XxFactory" >
+    insert into xx_factory (id, FULL_NAME, FACTORY_NAME, 
+      CONTACTS, PHONE, MOBILE, 
+      FAX, INSPECTOR, CNOTE, 
+      ORDER_NO, STATE, CREATE_BY, 
+      CREATE_DEPT, CREATE_TIME)
+    values (#{id,jdbcType=INTEGER}, #{fullName,jdbcType=VARCHAR}, #{factoryName,jdbcType=VARCHAR}, 
+      #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{fax,jdbcType=VARCHAR}, #{inspector,jdbcType=VARCHAR}, #{cnote,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDept,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gx.po.XxFactory" >
+    insert into xx_factory
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="fullName != null" >
+        FULL_NAME,
+      </if>
+      <if test="factoryName != null" >
+        FACTORY_NAME,
+      </if>
+      <if test="contacts != null" >
+        CONTACTS,
+      </if>
+      <if test="phone != null" >
+        PHONE,
+      </if>
+      <if test="mobile != null" >
+        MOBILE,
+      </if>
+      <if test="fax != null" >
+        FAX,
+      </if>
+      <if test="inspector != null" >
+        INSPECTOR,
+      </if>
+      <if test="cnote != null" >
+        CNOTE,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createDept != null" >
+        CREATE_DEPT,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="fullName != null" >
+        #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryName != null" >
+        #{factoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="inspector != null" >
+        #{inspector,jdbcType=VARCHAR},
+      </if>
+      <if test="cnote != null" >
+        #{cnote,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDept != null" >
+        #{createDept,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gx.po.XxFactoryExample" resultType="java.lang.Integer" >
+    select count(*) from xx_factory
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update xx_factory
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.fullName != null" >
+        FULL_NAME = #{record.fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.factoryName != null" >
+        FACTORY_NAME = #{record.factoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contacts != null" >
+        CONTACTS = #{record.contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        PHONE = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobile != null" >
+        MOBILE = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fax != null" >
+        FAX = #{record.fax,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inspector != null" >
+        INSPECTOR = #{record.inspector,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cnote != null" >
+        CNOTE = #{record.cnote,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderNo != null" >
+        ORDER_NO = #{record.orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.createBy != null" >
+        CREATE_BY = #{record.createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDept != null" >
+        CREATE_DEPT = #{record.createDept,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update xx_factory
+    set id = #{record.id,jdbcType=INTEGER},
+      FULL_NAME = #{record.fullName,jdbcType=VARCHAR},
+      FACTORY_NAME = #{record.factoryName,jdbcType=VARCHAR},
+      CONTACTS = #{record.contacts,jdbcType=VARCHAR},
+      PHONE = #{record.phone,jdbcType=VARCHAR},
+      MOBILE = #{record.mobile,jdbcType=VARCHAR},
+      FAX = #{record.fax,jdbcType=VARCHAR},
+      INSPECTOR = #{record.inspector,jdbcType=VARCHAR},
+      CNOTE = #{record.cnote,jdbcType=VARCHAR},
+      ORDER_NO = #{record.orderNo,jdbcType=INTEGER},
+      STATE = #{record.state,jdbcType=INTEGER},
+      CREATE_BY = #{record.createBy,jdbcType=VARCHAR},
+      CREATE_DEPT = #{record.createDept,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gx.po.XxFactory" >
+    update xx_factory
+    <set >
+      <if test="fullName != null" >
+        FULL_NAME = #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryName != null" >
+        FACTORY_NAME = #{factoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        MOBILE = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="inspector != null" >
+        INSPECTOR = #{inspector,jdbcType=VARCHAR},
+      </if>
+      <if test="cnote != null" >
+        CNOTE = #{cnote,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDept != null" >
+        CREATE_DEPT = #{createDept,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gx.po.XxFactory" >
+    update xx_factory
+    set FULL_NAME = #{fullName,jdbcType=VARCHAR},
+      FACTORY_NAME = #{factoryName,jdbcType=VARCHAR},
+      CONTACTS = #{contacts,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      MOBILE = #{mobile,jdbcType=VARCHAR},
+      FAX = #{fax,jdbcType=VARCHAR},
+      INSPECTOR = #{inspector,jdbcType=VARCHAR},
+      CNOTE = #{cnote,jdbcType=VARCHAR},
+      ORDER_NO = #{orderNo,jdbcType=INTEGER},
+      STATE = #{state,jdbcType=INTEGER},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_DEPT = #{createDept,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+	<!-- 删除多条 -->
+	<delete id="deleteAll" parameterType="java.lang.Integer">
+		delete from xx_factory
+		where id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 修改状态 -->
+	<update id="updateState" parameterType="map">
+		update xx_factory
+		set STATE=#{state}
+		where id in
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	
+	
+</mapper>
